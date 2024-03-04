@@ -1,5 +1,5 @@
 -- gemotions.RegisterEmote(page, image, sound)
-
+gemotions.RegisterPackage("wapp", "Эмоции", 1)
 gemotions.RegisterEmote("wapp", "gemotions/wapp/hi.png", "gemotions/wapp/hi.ogg")
 gemotions.RegisterEmote("wapp", "gemotions/wapp/bye.png", "gemotions/wapp/bye.ogg")
 gemotions.RegisterEmote("wapp", "gemotions/wapp/happy.png", "gemotions/wapp/happy.ogg")
