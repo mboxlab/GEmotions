@@ -28,6 +28,7 @@ function gemotions.RegisterEmote(pack, material, sound)
 	table_insert(gemotions.emotions[pack], {
 		material = Material(material or ""),
 		sound = sound or "",
+		name = material:match("/%w+%."):sub(2, -2),
 	})
 	if SERVER then
 		resource.AddSingleFile(string.format("materials/%s", material))

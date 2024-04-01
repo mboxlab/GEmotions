@@ -6,7 +6,8 @@
 	░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
 	░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
 	░▒▓████████▓▒░▒▓███████▓▒░░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
-]]--
+]]
+--
 
 local gemotions = gemotions
 local packages = gemotions.packages
@@ -82,7 +83,70 @@ do
 		return package
 	end
 end
-
+concommand.Add("gemotions", function(ply, cmd, args)
+	local pack = args[1]
+	local emote = args[2]
+	if not pack or not emotions[pack] then
+		print("not find package")
+		return
+	end
+	if not emote then
+		print("not find emotion")
+		return
+	end
+	local t = emotions[pack]
+	local emoteId = 0
+	if t then
+		for k, v in ipairs(t) do
+			if v.name == emote then
+				emoteId = k
+				break
+			end
+		end
+	elseif not t or emoteId == 0 then
+		print("not find emotion")
+		return
+	end
+	local packId = 0
+	for k, v in ipairs(packages) do
+		if v == pack then
+			packId = k
+			break
+		end
+	end
+	net.Start("gemotions") -- Net
+	net.WriteUInt(emoteId, 7)
+	net.WriteUInt(packId, 7)
+	net.SendToServer()
+end, function(cmd, args)
+	local tbl = {}
+	local args = string.Explode(" ", args:Trim(), false)
+	for k, v in ipairs(packages) do
+		if args[1] and args[1]:Trim() ~= "" then
+			if string.find(v, args[1]) then
+				table.insert(tbl, cmd .. " " .. v)
+			end
+		else
+			table.insert(tbl, cmd .. " " .. v)
+		end
+	end
+	if #tbl == 1 then
+		local t = emotions[args[1]]
+		if t then
+			tbl = {}
+			for k, v in ipairs(t) do
+				if args[2] and args[2]:Trim() ~= "" then
+					if string.find(v.name, args[2]) then
+						table.insert(tbl, cmd .. " " .. args[1] .. " " .. v.name)
+					end
+				else
+					table.insert(tbl, cmd .. " " .. args[1] .. " " .. v.name)
+				end
+			end
+		end
+	end
+	return tbl
+end)
 function PANEL:Init() -- Init
 	self.selectedPack = 1
 
@@ -230,7 +294,8 @@ vgui.Register("gemotions", PANEL, "DPanel")
 |_______/ |__/  |__/|______/ \______/    |__/  |__/  |__/    |__/    |________/ \______/ 
                                                                                          
                                                                                                                            
-]]--
+]]
+--
 
 -----------------------------------------------------------------------------------------------
 
@@ -443,4 +508,5 @@ end)
 	|  $$$$$$$| $$__/ $$ _\$$$$$$\| $$__/ $$ _\$$$$$$\|  $$$$$$$| $$$$$$\ 
 	 \$$    $$| $$    $$|       $$ \$$    $$|       $$ \$$    $$| $$  \$$\
 	  \$$$$$$$ \$$$$$$$  \$$$$$$$   \$$$$$$  \$$$$$$$   \$$$$$$$ \$$   \$$                                                      
-]]--
+]]
+--
